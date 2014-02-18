@@ -39,7 +39,7 @@ public class SessionControlServlet extends HttpServlet {
             } else {// si es distinto de null
                 numeroAccesos = new Integer(numeroAccesos + 1);//se le suma 1
                 if (numeroAccesos >= maximoNumAccesos) {//si supera o iguala el numero maximo de accesos
-                    response.sendRedirect("./accesosMaximos.html");//se le redirige a este html
+                    response.sendRedirect("./accesosMax.html");//se le redirige a este html
                 }
                 session.setAttribute("numeroAccesos", numeroAccesos);//se graba en la sesion el atributo numeroAccesos
             }

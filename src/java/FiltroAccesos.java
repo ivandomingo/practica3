@@ -10,6 +10,7 @@ import java.io.StringWriter;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -22,7 +23,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author ivanDomingo
  */
-@WebFilter(filterName = "FiltroAccesos", urlPatterns = {"/accesosMaximos.html"})
+@WebFilter(filterName = "Filtro", urlPatterns = {"/accesosMax.html"})
 public class FiltroAccesos implements Filter {
 
     private static final boolean debug = true;
@@ -30,44 +31,46 @@ public class FiltroAccesos implements Filter {
     // this value is null, this filter instance is not currently
     // configured. 
     private FilterConfig filterConfig = null;
+    private ServletContext servletContext;
 
     public FiltroAccesos() {
     }
 
     private void doBeforeProcessing(ServletRequest request, ServletResponse response) throws IOException, ServletException {
         if (debug) {
-            log("FiltroAccesos:DoBeforeProcessing");
+            log("Filtro:DoBeforeProcessing");
         }
     }
 
     private void doAfterProcessing(ServletRequest request, ServletResponse response) throws IOException, ServletException {
         if (debug) {
-            log("FiltroAccesos:DoAfterProcessing");
+            log("Filtro:DoAfterProcessing");
         }
 
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response,FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         Throwable problem = null;
         if (debug) {
-            log("FiltroAccesos:doFilter()");
+            log("Filtro:doFilter()");
         }
 
-        doBeforeProcessing(request, response);
+        doBeforeProcessing(request, response);//antes de procesar peticion
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        HttpSession httpSession = httpServletRequest.getSession();
-        Integer numero = (Integer) httpSession.getAttribute("numeroAccesos");
-
+        HttpSession httpSession = httpServletRequest.getSession();//recibe la session
+        Integer numero = (Integer) httpSession.getAttribute("numeroAccesos");//recibe el atributo numeroAccesos
+        Integer maximo = Integer.parseInt(servletContext.getInitParameter("MaximoNumeroAccesos"));
         try {
-
-            if (numero >= 5) {
-                chain.doFilter(request, response);
-            } else {
-                httpServletResponse.sendRedirect("./controldesesiones");
+            if (numero == null) {
+                numero = 0;
             }
-            chain.doFilter(request, response);
+            if (numero >= maximo) {//si los accesos >=5
+                chain.doFilter(request, response);//hace el filtro que saca accesosMaximos.html
+            } else {
+                httpServletResponse.sendRedirect("./paginacontrol");//y si no redirecciona a controldesesiones
+            }
         } catch (Throwable t) {
             problem = t;
             t.printStackTrace();
@@ -112,9 +115,10 @@ public class FiltroAccesos implements Filter {
      */
     public void init(FilterConfig filterConfig) {
         this.filterConfig = filterConfig;
+        servletContext = this.filterConfig.getServletContext();
         if (filterConfig != null) {
             if (debug) {
-                log("FiltroAccesos:Initializing filter");
+                log("Filtro:Initializing filter");
             }
         }
     }
@@ -125,9 +129,9 @@ public class FiltroAccesos implements Filter {
     @Override
     public String toString() {
         if (filterConfig == null) {
-            return ("FiltroAccesos()");
+            return ("Filtro()");
         }
-        StringBuffer stringBuffer = new StringBuffer("FiltroAccesos(");
+        StringBuffer stringBuffer = new StringBuffer("Filtro(");
         stringBuffer.append(filterConfig);
         stringBuffer.append(")");
         return (stringBuffer.toString());

@@ -10,16 +10,16 @@
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>controldesesiones</welcome-file>
+        <welcome-file>paginacontrol</welcome-file>
     </welcome-file-list>
     <!-- ==================================================== -->
     <servlet>
-        <servlet-name>ControlDeSesiones</servlet-name>
+        <servlet-name>ControlarSessiones</servlet-name>
         <servlet-class>SessionControlServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>ControlDeSesiones</servlet-name>
-        <url-pattern>/controldesesiones</url-pattern>
+        <servlet-name>ControlarSessiones</servlet-name>
+        <url-pattern>/paginacontrol</url-pattern>
     </servlet-mapping>
     <context-param>
         <param-name>MaximoNumeroAccesos</param-name>
