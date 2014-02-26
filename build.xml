@@ -60,8 +60,7 @@
             <classes dir="${build.home}"/>
         </war>
     </target>
-    
-    <!--===============================\\ NO FUNCIONA //=====================================-->
+
     
     <path id="deployer.classpath">
         <fileset dir="${tomcat.home}/lib">
